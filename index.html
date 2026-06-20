@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>توقع درجاتك - حاسبة GPA</title>
+    <link href="https://cdn.jsdelivr.net/npm/fontsource-tajawal@5/index.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            min-height: 100vh;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.3rem;
+            background: linear-gradient(90deg, #f7971e, #ffd200);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 4px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .step {
+            display: none;
+            animation: fadeInUp 0.5s ease;
+        }
+
+        .step.active { display: block; }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(255,255,255,0.12);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+
+        .card h2 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .card p {
+            color: rgba(255,255,255,0.7);
+            line-height: 1.8;
+            margin-bottom: 25px;
+            font-size: 1.05rem;
+        }
+
+        .icon-big {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .btn {
+            padding: 14px 40px;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00d2ff, #3a7bd5);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(0,210,255,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0,210,255,0.5);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: #fff;
+            box-shadow: 0 8px 25px rgba(17,153,142,0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(17,153,142,0.5);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: rgba(255,255,255,0.85);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #00d2ff;
+            box-shadow: 0 0 20px rgba(0,210,255,0.2);
+            background: rgba(255,255,255,0.12);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.35);
+        }
+
+        .form-group select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .subject-card {
+            background: rgba(255,255,255,0.06);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .subject-card:hover {
+            border-color: rgba(0,210,255,0.3);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .subject-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #ffd200;
+        }
+
+        .subject-card .form-group {
+            margin-bottom: 12px;
+        }
+
+        .subject-card .form-group label {
+            font-size: 0.85rem;
+        }
+
+        .subject-card .form-group input {
+            padding: 10px 14px;
+            font-size: 0.9rem;
+        }
+
+        .results-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.12);
+            margin-bottom: 20px;
+        }
+
+        .results-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #ffd200;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 18px;
+            margin: 8px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            border-right: 3px solid #00d2ff;
+        }
+
+        .result-item .label {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+        }
+
+        .result-item .value {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #38ef7d;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .progress-success { background: linear-gradient(90deg, #11998e, #38ef7d); }
+        .progress-warning { background: linear-gradient(90deg, #f7971e, #ffd200); }
+        .progress-danger { background: linear-gradient(90deg, #ff416c, #ff4b2b); }
+
+        .grade-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin: 4px;
+        }
+
+        .grade-a { background: rgba(56,239,125,0.2); color: #38ef7d; border: 1px solid rgba(56,239,125,0.3); }
+        .grade-b { background: rgba(0,210,255,0.2); color: #00d2ff; border: 1px solid rgba(0,210,255,0.3); }
+        .grade-c { background: rgba(247,151,30,0.2); color: #ffd200; border: 1px solid rgba(247,151,30,0.3); }
+        .grade-d { background: rgba(255,65,108,0.2); color: #ff416c; border: 1px solid rgba(255,65,108,0.3); }
+        .grade-f { background: rgba(255,0,0,0.2); color: #ff0000; border: 1px solid rgba(255,0,0,0.3); }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.06);
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .stat-box .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 8px 0;
+        }
+
+        .stat-box .stat-label {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            padding: 12px 30px;
+            border-radius: 10px;
+            border: 2px solid rgba(255,255,255,0.2);
+            background: transparent;
+            color: rgba(255,255,255,0.7);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            border-color: #00d2ff;
+            background: rgba(0,210,255,0.15);
+            color: #00d2ff;
+        }
+
+        .toggle-btn:hover {
+            border-color: rgba(0,210,255,0.5);
+        }
+
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .step-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .step-dot.active {
+            background: #00d2ff;
+            box-shadow: 0 0 15px rgba(0,210,255,0.5);
+        }
+
+        .step-dot.completed {
+            background: #38ef7d;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            padding: 8px 16px;
+            transition: color 0.3s;
+        }
+
+        .back-btn:hover { color: #fff; }
+
+        .flex-between {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .table-results {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .table-results th, .table-results td {
+            padding: 12px 16px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table-results th {
+            background: rgba(255,255,255,0.08);
+            color: #ffd200;
+            font-weight: 600;
+        }
+
+        .table-results tr:hover { background: rgba(255,255,255,0.04); }
+
+        .warning-box {
+            background: rgba(255,65,108,0.1);
+            border: 1px solid rgba(255,65,108,0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            color: #ff6b8a;
+            font-size: 0.9rem;
+        }
+
+        .success-box {
+            background: rgba(56,239,125,0.1);
+            border: 1px solid rgba(56,239,125,0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            color: #38ef7d;
+            font-size: 0.9rem;
+        }
+
+        .info-box {
+            background: rgba(0,210,255,0.1);
+            border: 1px solid rgba(0,210,255,0.3);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin: 15px 0;
+            color: #00d2ff;
+            font-size: 0.9rem;
+        }
+
+        .subject-name-input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.08);
+            color: #fff;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .subject-name-input:focus { border-color: #00d2ff; }
+
+        .no-final-subjects { max-width: 600px; margin: 0 auto; }
+
+        @media (max-width: 768px) {
+            .subjects-grid { grid-template-columns: 1fr; }
+            .card { padding: 25px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .table-results th, .table-results td { padding: 8px 6px; font-size: 0.8rem; }
+            .toggle-group { flex-direction: column; }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: #00d2ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .feature-item {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .feature-item .feat-icon { font-size: 2rem; margin-bottom: 10px; }
+        .feature-item h4 { font-size: 0.95rem; margin-bottom: 6px; color: #fff; }
+        .feature-item p { font-size: 0.8rem; color: rgba(255,255,255,0.5); margin: 0; }
+
+        .reset-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: rgba(255,255,255,0.7);
+            padding: 10px 25px;
+            border-radius: 10px;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reset-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+
+        .subject-count-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            max-width: 400px;
+            margin: 30px auto;
+        }
+
+        .subject-count-btn {
+            padding: 20px;
+            border-radius: 14px;
+            border: 2px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-family: 'Tajawal', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .subject-count-btn span {
+            display: block;
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        .subject-count-btn:hover {
+            border-color: #00d2ff;
+            background: rgba(0,210,255,0.1);
+            transform: translateY(-2px);
+        }
+
+        .subject-count-btn.active {
+            border-color: #00d2ff;
+            background: rgba(0,210,255,0.2);
+            color: #00d2ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✨ Designed by Eng. Mohamed Ashraf ✨</h1>
+        <p>نظام توقع الدرجات وحاسبة المعدل التراكمي</p>
+    </div>
+
+    <div class="container">
+        <div class="step-indicator" id="stepIndicator">
+            <div class="step-dot active" data-step="0"></div>
+            <div class="step-dot" data-step="1"></div>
+            <div class="step-dot" data-step="2"></div>
+            <div class="step-dot" data-step="3"></div>
+            <div class="step-dot" data-step="4"></div>
+        </div>
+
+        <!-- Step 0: Welcome -->
+        <div class="step active" id="step0">
+            <div class="card">
+                <span class="icon-big">🎓</span>
+                <h2>أهلاً بيك في نظام توقع الدرجات</h2>
+                <p>
+                    الموقع دا بيساعدك تتوقع درجاتك قبل ما تطلع النتيجة<br>
+                    تحسب الـ GPA بتاعك وتعرف نسبت نجاحك أو سحبك لكل مادة
+                </p>
+                <div class="features-grid">
+                    <div class="feature-item">
+                        <div class="feat-icon">📊</div>
+                        <h4>توقع الـ GPA</h4>
+                        <p>احسب معدل الترم والتراكمي</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feat-icon">🎯</div>
+                        <h4>توقع الدرجات</h4>
+                        <p>اعرف التقدير المتوقع لكل مادة</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feat-icon">⚠️</div>
+                        <h4>نسبة السحب والرسوب</h4>
+                        <p>اعرف فرصك قبل الفاينل</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feat-icon">📚</div>
+                        <h4>لـ ٦ مواد</h4>
+                        <p>اختار عدد موادك وادخل الداتا</p>
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="goToStep(1)">يلا نبدأ ←</button>
+            </div>
+        </div>
+
+        <!-- Step 1: Final Exam Question -->
+        <div class="step" id="step1">
+            <div class="card">
+                <span class="icon-big">📝</span>
+                <h2>هل دخلت امتحان الفاينل؟</h2>
+                <p>اختار الإجابة عشان نعرف نساعدك ازاي</p>
+                <div class="toggle-group">
+                    <button class="toggle-btn" id="btnFinalYes" onclick="selectFinal(true)">✅ أيوه، دخلت الفاينل</button>
+                    <button class="toggle-btn" id="btnFinalNo" onclick="selectFinal(false)">❌ لأ، لسه مدخلتش</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 1b: Choose Number of Subjects (only if took final) -->
+        <div class="step" id="step1b">
+            <div class="card">
+                <span class="icon-big">📚</span>
+                <h2>عندك كام مادة؟</h2>
+                <p>اختار عدد المواد المسجلة عندك الترم ده</p>
+                <div class="subject-count-grid" id="subjectCountGrid">
+                    <button class="subject-count-btn" onclick="selectSubjectCount(1)">١<span>مادة</span></button>
+                    <button class="subject-count-btn" onclick="selectSubjectCount(2)">٢<span>مادتين</span></button>
+                    <button class="subject-count-btn" onclick="selectSubjectCount(3)">٣<span>مواد</span></button>
+                    <button class="subject-count-btn" onclick="selectSubjectCount(4)">٤<span>مواد</span></button>
+                    <button class="subject-count-btn" onclick="selectSubjectCount(5)">٥<span>مواد</span></button>
+                    <button class="subject-count-btn" onclick="selectSubjectCount(6)">٦<span>مواد</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 2a: Took Final - Dynamic Subject Count -->
+        <div class="step" id="step2a">
+            <div class="flex-between">
+                <button class="back-btn" onclick="goToStep('1b')">← رجوع</button>
+                <h2 style="font-size:1.3rem; color:#ffd200;" id="subjectCountLabel">ادخل بيانات المواد</h2>
+            </div>
+            <p style="text-align:center; color:rgba(255,255,255,0.6); margin-bottom:20px;">
+                ادخل بيانات كل مادة والتوقعات بتاعتك
+            </p>
+            <div class="subjects-grid" id="subjectsGrid">
+                <!-- Generated dynamically by JS -->
+            </div>
+
+            <div class="card" style="margin-top:20px;">
+                <h3 style="color:#ffd200; margin-bottom:15px;">📈 معلومات الـ GPA</h3>
+                <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:15px;">
+                    <div class="form-group">
+                        <label>معدل ترم الأول (GPA)</label>
+                        <input type="number" id="gpaFirstSem" step="0.01" min="0" max="4" placeholder="مثال: 3.20">
+                    </div>
+                    <div class="form-group">
+                        <label>المعدل التراكمي الحالي (GPA)</label>
+                        <input type="number" id="gpaCumulative" step="0.01" min="0" max="4" placeholder="مثال: 3.10">
+                    </div>
+                    <div class="form-group">
+                        <label>عدد الساعات المعتمدة لكل ترم</label>
+                        <input type="number" id="creditHoursPerSem" min="12" max="25" placeholder="مثال: 18">
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="calculateWithFinal()" style="margin-top:15px;">🔮 توقع النتائج</button>
+            </div>
+        </div>
+
+        <!-- Step 2b: No Final - Subject by Subject (NO credit hours per sem) -->
+        <div class="step" id="step2b">
+            <div class="flex-between">
+                <button class="back-btn" onclick="goToStep(1)">← رجوع</button>
+                <h2 style="font-size:1.3rem; color:#ffd200;">ادخل درجاتك قبل الفاينل</h2>
+            </div>
+            <div class="no-final-subjects">
+                <div class="card" id="noFinalCard">
+                    <span class="icon-big">📋</span>
+                    <h2 style="font-size:1.4rem;">بيانات المادة</h2>
+                    <div class="form-group">
+                        <label>اسم المادة</label>
+                        <input type="text" id="nfSubjectName" placeholder="مثال: رياضيات ١">
+                    </div>
+                    <div class="form-group">
+                        <label>درجات كويزات السكشن (من ٢٠)</label>
+                        <input type="number" id="nfSectionQuizzes" min="0" max="20" placeholder="0 - 20">
+                    </div>
+                    <div class="form-group">
+                        <label>درجات كويزات الدكتور / المحاضرة (من ٢٠)</label>
+                        <input type="number" id="nfDoctorQuizzes" min="0" max="20" placeholder="0 - 20">
+                    </div>
+                    <div class="form-group">
+                        <label>درجة الميدتيرم (من ٢٠)</label>
+                        <input type="number" id="nfMidterm" min="0" max="20" placeholder="0 - 20">
+                    </div>
+                    <div class="form-group">
+                        <label>درجة امتحان العملي (من ٢٠) - لو مفيش عملي سيبه فاضي</label>
+                        <input type="number" id="nfPractical" min="0" max="20" placeholder="سيبه فاضي لو مفيش عملي">
+                    </div>
+                    <button class="btn btn-primary" onclick="calculateNoFinal()">📊 احسب النسب</button>
+                </div>
+
+                <div id="noFinalResults" class="hidden">
+                    <div class="results-card">
+                        <h3>📊 نتائج التوقع للمادة: <span id="nfResultName"></span></h3>
+                        <div class="stats-grid">
+                            <div class="stat-box">
+                                <div class="stat-label">المجموع الحالي (من ٦٠)</div>
+                                <div class="stat-value" id="nfCurrentTotal" style="color:#00d2ff;">0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">باقي على الفاينل (من ٤٠)</div>
+                                <div class="stat-value" id="nfRemaining" style="color:#ffd200;">0</div>
+                            </div>
+                            <div class="stat-box">
+                                <div class="stat-label">التقدير الحالي</div>
+                                <div class="stat-value" id="nfCurrentGrade" style="color:#38ef7d;">-</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top:20px;">
+                            <h4 style="margin-bottom:10px; color:#ffd200;">📈 نسب التوقع:</h4>
+                            <div class="result-item">
+                                <span class="label">✅ نسبة النجاح</span>
+                                <span class="value" id="nfSuccessRate">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar progress-success" id="nfSuccessBar" style="width:0%"></div>
+                            </div>
+
+                            <div class="result-item">
+                                <span class="label">🔄 نسبة السحب</span>
+                                <span class="value" id="nfWithdrawRate" style="color:#ffd200;">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar progress-warning" id="nfWithdrawBar" style="width:0%"></div>
+                            </div>
+
+                            <div class="result-item">
+                                <span class="label">❌ نسبة الرسوب</span>
+                                <span class="value" id="nfFailRate" style="color:#ff416c;">0%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar progress-danger" id="nfFailBar" style="width:0%"></div>
+                            </div>
+                        </div>
+
+                        <div id="nfAdvice" style="margin-top:15px;"></div>
+
+                        <button class="btn btn-primary" onclick="resetNoFinal()" style="margin-top:20px;">🔄 احسب مادة تانية</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Step 3: Results (With Final) -->
+        <div class="step" id="step3">
+            <div class="flex-between">
+                <button class="back-btn" onclick="goToStep('2a')">← رجوع</button>
+                <button class="reset-btn" onclick="resetAll()">🔄 بدء من جديد</button>
+            </div>
+
+            <div class="card" style="margin-bottom:20px;">
+                <span class="icon-big">🎉</span>
+                <h2>النتائج المتوقعة</h2>
+            </div>
+
+            <div class="stats-grid" id="gpaSummary">
+                <!-- Generated by JS -->
+            </div>
+
+            <div class="results-card">
+                <h3>📋 تفاصيل كل مادة</h3>
+                <div style="overflow-x:auto;">
+                    <table class="table-results" id="resultsTable">
+                        <thead>
+                            <tr>
+                                <th>المادة</th>
+                                <th>الساعات</th>
+                                <th>المجموع</th>
+                                <th>التقدير</th>
+                                <th>النقاط</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="gpaAdvice" style="margin-top:15px;"></div>
+        </div>
+
+        <!-- Loading Step -->
+        <div class="step" id="stepLoading">
+            <div class="card">
+                <span class="icon-big">🤖</span>
+                <h2>جاري تحليل البيانات...</h2>
+                <p>النظام بيحسب التوقعات بتاعتك</p>
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let hasFinal = true;
+        let selectedSubjectCount = 6;
+        let currentStep = 0;
+
+        function goToStep(step) {
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+            
+            let targetId;
+            if (step === '1b') {
+                targetId = 'step1b';
+            } else if (step === '2a') {
+                targetId = 'step2a';
+            } else if (step === '2b') {
+                targetId = 'step2b';
+            } else if (step === 'loading') {
+                targetId = 'stepLoading';
+            } else {
+                targetId = 'step' + step;
+            }
+            
+            const stepEl = document.getElementById(targetId);
+            if (stepEl) stepEl.classList.add('active');
+
+            let stepNum = typeof step === 'string' ? parseInt(step) || currentStep : step;
+            if (step === '1b') stepNum = 1;
+            if (step === '2a') stepNum = 2;
+            if (step === '2b') stepNum = 2;
+            if (step === 'loading') stepNum = 4;
+
+            document.querySelectorAll('.step-dot').forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i < stepNum) dot.classList.add('completed');
+                if (i === stepNum) dot.classList.add('active');
+            });
+
+            currentStep = step;
+        }
+
+        function selectFinal(yes) {
+            hasFinal = yes;
+            document.getElementById('btnFinalYes').classList.toggle('active', yes);
+            document.getElementById('btnFinalNo').classList.toggle('active', !yes);
+
+            if (yes) {
+                goToStep('1b');
+            } else {
+                goToStep('2b');
+            }
+        }
+
+        function selectSubjectCount(count) {
+            selectedSubjectCount = count;
+            
+            document.querySelectorAll('.subject-count-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', (i + 1) === count);
+            });
+
+            generateSubjectCards(count);
+            document.getElementById('subjectCountLabel').textContent = `ادخل بيانات كل المواد (${count} مواد)`;
+
+            setTimeout(() => {
+                goToStep('2a');
+            }, 300);
+        }
+
+        function generateSubjectCards(count) {
+            const grid = document.getElementById('subjectsGrid');
+            grid.innerHTML = '';
+
+            for (let i = 0; i < count; i++) {
+                grid.innerHTML += `
+                    <div class="subject-card">
+                        <h3>📚 المادة ${i + 1}</h3>
+                        <input type="text" class="subject-name-input" id="subName${i}" placeholder="اسم المادة (اختياري)">
+                        <div class="form-group">
+                            <label>عدد الساعات المعتمدة</label>
+                            <input type="number" id="subCredits${i}" min="1" max="6" value="3" placeholder="مثال: 3">
+                        </div>
+                        <div class="form-group">
+                            <label>مجموع الدرجات الحالية (كويزات + ميدتيرم) من ٦٠</label>
+                            <input type="number" id="subCurrent${i}" min="0" max="60" placeholder="مثال: 45">
+                        </div>
+                        <div class="form-group">
+                            <label>هل المادة فيها عملي؟</label>
+                            <select id="subHasPractical${i}">
+                                <option value="yes">أيوه</option>
+                                <option value="no">لأ</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>درجة العملي المتوقعة (من ٢٠)</label>
+                            <input type="number" id="subPractical${i}" min="0" max="20" placeholder="مثال: 18">
+                        </div>
+                        <div class="form-group">
+                            <label>درجة الفاينل المتوقعة (من ٤٠)</label>
+                            <input type="number" id="subFinal${i}" min="0" max="40" placeholder="مثال: 30">
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function calculateWithFinal() {
+            goToStep('loading');
+
+            setTimeout(() => {
+                let totalWeightedPoints = 0;
+                let totalCredits = 0;
+                let firstSemGPA = parseFloat(document.getElementById('gpaFirstSem').value) || 0;
+                let cumulativeGPA = parseFloat(document.getElementById('gpaCumulative').value) || 0;
+                let creditHoursPerSem = parseInt(document.getElementById('creditHoursPerSem').value) || 18;
+
+                let tableHTML = '';
+                let subjectsData = [];
+
+                for (let i = 0; i < selectedSubjectCount; i++) {
+                    let name = document.getElementById(`subName${i}`).value || `المادة ${i + 1}`;
+                    let credits = parseInt(document.getElementById(`subCredits${i}`).value) || 3;
+                    let current = parseFloat(document.getElementById(`subCurrent${i}`).value) || 0;
+                    let hasPractical = document.getElementById(`subHasPractical${i}`).value === 'yes';
+                    let practical = hasPractical ? (parseFloat(document.getElementById(`subPractical${i}`).value) || 0) : 0;
+                    let finalExam = parseFloat(document.getElementById(`subFinal${i}`).value) || 0;
+
+                    let totalScore = current + finalExam;
+
+                    let grade = getGrade(totalScore);
+                    let gradePoints = getGradePoints(totalScore);
+
+                    totalWeightedPoints += gradePoints * credits;
+                    totalCredits += credits;
+
+                    let status = totalScore >= 50 ? '✅ ناجح' : '❌ راسب';
+
+                    tableHTML += `
+                        <tr>
+                            <td>${name}</td>
+                            <td>${credits}</td>
+                            <td>${totalScore}/100</td>
+                            <td><span class="grade-badge ${grade.class}">${grade.label}</span></td>
+                            <td>${gradePoints.toFixed(2)}</td>
+                            <td>${status}</td>
+                        </tr>
+                    `;
+
+                    subjectsData.push({ name, credits, totalScore, grade, gradePoints });
+                }
+
+                let currentSemGPA = totalCredits > 0 ? (totalWeightedPoints / totalCredits) : 0;
+
+                let totalCreditsSoFar = creditHoursPerSem;
+                let oldTotalPoints = totalCreditsSoFar * cumulativeGPA;
+                let newTotalPoints = oldTotalPoints + totalWeightedPoints;
+                let newTotalCredits = totalCreditsSoFar + totalCredits;
+                let newCumulativeGPA = newTotalCredits > 0 ? (newTotalPoints / newTotalCredits) : 0;
+
+                document.getElementById('gpaSummary').innerHTML = `
+                    <div class="stat-box">
+                        <div class="stat-label">معدل ترم الأول</div>
+                        <div class="stat-value" style="color:#00d2ff;">${firstSemGPA.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">التراكمي القديم</div>
+                        <div class="stat-value" style="color:#ffd200;">${cumulativeGPA.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">معدل الترم ده (متوقع)</div>
+                        <div class="stat-value" style="color:#38ef7d;">${currentSemGPA.toFixed(2)}</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-label">التراكمي الجديد (متوقع)</div>
+                        <div class="stat-value" style="color:#ff416c;">${newCumulativeGPA.toFixed(2)}</div>
+                    </div>
+                `;
+
+                document.getElementById('resultsTableBody').innerHTML = tableHTML;
+
+                let adviceHTML = '';
+                if (newCumulativeGPA >= 3.7) {
+                    adviceHTML = `<div class="success-box">🎉 ممتاز! التراكمي هيكون ${newCumulativeGPA.toFixed(2)} - تقدير عام ممتاز مع مرتبة شرف</div>`;
+                } else if (newCumulativeGPA >= 3.0) {
+                    adviceHTML = `<div class="success-box">👏 جيد جداً! التراكمي هيكون ${newCumulativeGPA.toFixed(2)} - تقدير عام جيد جداً</div>`;
+                } else if (newCumulativeGPA >= 2.3) {
+                    adviceHTML = `<div class="info-box">📌 التراكمي هيكون ${newCumulativeGPA.toFixed(2)} - تقدير عام جيد</div>`;
+                } else if (newCumulativeGPA >= 2.0) {
+                    adviceHTML = `<div class="warning-box">⚠️ التراكمي هيكون ${newCumulativeGPA.toFixed(2)} - تقدير عام مقبول</div>`;
+                } else {
+                    adviceHTML = `<div class="warning-box">🚨 التراكمي هيكون ${newCumulativeGPA.toFixed(2)} - تحت المقبول، محتاج تراجع نفسك</div>`;
+                }
+
+                let failedSubjects = subjectsData.filter(s => s.totalScore < 50);
+                if (failedSubjects.length > 0) {
+                    adviceHTML += `<div class="warning-box">⚠️ عندك ${failedSubjects.length} مادة ممكن ترسب فيها: ${failedSubjects.map(s => s.name).join('، ')}</div>`;
+                }
+
+                document.getElementById('gpaAdvice').innerHTML = adviceHTML;
+
+                goToStep(3);
+            }, 1500);
+        }
+
+        function calculateNoFinal() {
+            let subjectName = document.getElementById('nfSubjectName').value || 'مادة';
+            let sectionQuizzes = parseFloat(document.getElementById('nfSectionQuizzes').value) || 0;
+            let doctorQuizzes = parseFloat(document.getElementById('nfDoctorQuizzes').value) || 0;
+            let midterm = parseFloat(document.getElementById('nfMidterm').value) || 0;
+
+            sectionQuizzes = Math.min(20, Math.max(0, sectionQuizzes));
+            doctorQuizzes = Math.min(20, Math.max(0, doctorQuizzes));
+            midterm = Math.min(20, Math.max(0, midterm));
+
+            let currentFrom60 = Math.min(60, sectionQuizzes + doctorQuizzes + midterm);
+            let remaining = 100 - currentFrom60;
+
+            let successRate, withdrawRate, failRate;
+
+            if (currentFrom60 >= 50) {
+                successRate = 92;
+                withdrawRate = 3;
+                failRate = 5;
+            } else if (currentFrom60 >= 40) {
+                successRate = 70;
+                withdrawRate = 12;
+                failRate = 18;
+            } else if (currentFrom60 >= 30) {
+                successRate = 48;
+                withdrawRate = 25;
+                failRate = 27;
+            } else if (currentFrom60 >= 20) {
+                successRate = 25;
+                withdrawRate = 35;
+                failRate = 40;
+            } else {
+                successRate = 10;
+                withdrawRate = 45;
+                failRate = 45;
+            }
+
+            let grade = getGrade(currentFrom60);
+
+            document.getElementById('nfResultName').textContent = subjectName;
+            document.getElementById('nfCurrentTotal').textContent = currentFrom60;
+            document.getElementById('nfRemaining').textContent = remaining;
+            document.getElementById('nfCurrentGrade').innerHTML = `<span class="grade-badge ${grade.class}">${grade.label}</span>`;
+
+            document.getElementById('nfSuccessRate').textContent = successRate + '%';
+            document.getElementById('nfWithdrawRate').textContent = withdrawRate + '%';
+            document.getElementById('nfFailRate').textContent = failRate + '%';
+
+            document.getElementById('nfSuccessBar').style.width = successRate + '%';
+            document.getElementById('nfWithdrawBar').style.width = withdrawRate + '%';
+            document.getElementById('nfFailBar').style.width = failRate + '%';
+
+            let minNeeded = Math.max(0, 50 - currentFrom60);
+            let adviceHTML = '';
+            if (successRate >= 70) {
+                adviceHTML = `<div class="success-box">💪 الوضع كويس! عندك فرصة كبيرة تنجح. ركز في الفاينل وجيب ${minNeeded} درجة على الأقل.</div>`;
+            } else if (successRate >= 40) {
+                adviceHTML = `<div class="info-box">📌 الوضع متوسط. محتاج تجيب ${minNeeded} من ٤٠ في الفاينل عشان تنجح. ذاكر كويس!</div>`;
+            } else {
+                adviceHTML = `<div class="warning-box">⚠️ الوضع صعب. محتاج تجيب ${minNeeded} من ٤٠ في الفاينل. فكر في سحب المادة لو محتاج.</div>`;
+            }
+
+            document.getElementById('nfAdvice').innerHTML = adviceHTML;
+
+            document.getElementById('noFinalCard').classList.add('hidden');
+            document.getElementById('noFinalResults').classList.remove('hidden');
+        }
+
+        function resetNoFinal() {
+            document.getElementById('nfSubjectName').value = '';
+            document.getElementById('nfSectionQuizzes').value = '';
+            document.getElementById('nfDoctorQuizzes').value = '';
+            document.getElementById('nfMidterm').value = '';
+            document.getElementById('nfPractical').value = '';
+
+            document.getElementById('noFinalCard').classList.remove('hidden');
+            document.getElementById('noFinalResults').classList.add('hidden');
+        }
+
+        function getGrade(score) {
+            if (score >= 90) return { label: 'A+', class: 'grade-a', points: 4.0 };
+            if (score >= 85) return { label: 'A', class: 'grade-a', points: 4.0 };
+            if (score >= 80) return { label: 'A-', class: 'grade-a', points: 3.7 };
+            if (score >= 75) return { label: 'B+', class: 'grade-b', points: 3.3 };
+            if (score >= 70) return { label: 'B', class: 'grade-b', points: 3.0 };
+            if (score >= 65) return { label: 'B-', class: 'grade-b', points: 2.7 };
+            if (score >= 60) return { label: 'C+', class: 'grade-c', points: 2.3 };
+            if (score >= 55) return { label: 'C', class: 'grade-c', points: 2.0 };
+            if (score >= 50) return { label: 'C-', class: 'grade-c', points: 1.7 };
+            if (score >= 45) return { label: 'D+', class: 'grade-d', points: 1.3 };
+            if (score >= 40) return { label: 'D', class: 'grade-d', points: 1.0 };
+            return { label: 'F', class: 'grade-f', points: 0.0 };
+        }
+
+        function getGradePoints(score) {
+            return getGrade(score).points;
+        }
+
+        function resetAll() {
+            goToStep(0);
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.subject-count-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('gpaFirstSem').value = '';
+            document.getElementById('gpaCumulative').value = '';
+            document.getElementById('creditHoursPerSem').value = '';
+            selectedSubjectCount = 6;
+        }
+
+        generateSubjectCards(6);
+    </script>
+</body>
+</html>
+
